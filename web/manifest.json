@@ -1,11 +1,11 @@
 {
-    "name": "expenses_logger_app",
-    "short_name": "expenses_logger_app",
+    "name": "Expense Log",
+    "short_name": "Expense Log",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F7F8F6",
+    "theme_color": "#176B5B",
+    "description": "Quick one-tap expense logging with professional reports and PDF export.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

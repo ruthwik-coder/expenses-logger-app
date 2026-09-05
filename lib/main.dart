@@ -285,7 +285,7 @@ class _Home extends State<Home> {
       appBar: AppBar(
         title: Text(
           tab == 0
-              ? 'Expense Log 🪵'
+              ? 'Expense Log '
               : tab == 1
                   ? 'History & Reports'
                   : 'Quick Buttons',
@@ -297,8 +297,8 @@ class _Home extends State<Home> {
         onDestinationSelected: (i) => setState(() => tab = i),
         destinations: const [
           NavigationDestination(
-            icon: Text('🪵', style: TextStyle(fontSize: 20)),
-            selectedIcon: Text('🪵', style: TextStyle(fontSize: 24)),
+            icon: Text('', style: TextStyle(fontSize: 20)),
+            selectedIcon: Text('', style: TextStyle(fontSize: 24)),
             label: 'Log',
           ),
           NavigationDestination(
@@ -321,8 +321,8 @@ class _Home extends State<Home> {
     final totalCount = presets.length + 1;
     final columns = totalCount <= 4 ? 2 : 3;
     final childAspectRatio = columns == 2
-        ? (totalCount <= 2 ? 1.4 : 1.12)
-        : 0.95;
+        ? (totalCount <= 2 ? 0.95 : 0.88)
+        : 0.78;
 
     return ListView(
       padding: const EdgeInsets.all(20),
@@ -339,7 +339,7 @@ class _Home extends State<Home> {
         const SizedBox(height: 24),
         Row(
           children: const [
-            Text('🪵', style: TextStyle(fontSize: 20)),
+            Text('', style: TextStyle(fontSize: 20)),
             SizedBox(width: 8),
             Text(
               'TAP BUTTON TO LOG',
@@ -975,10 +975,11 @@ class _Home extends State<Home> {
           (e) => [
             DateFormat('dd MMM yyyy\nhh:mm a').format(e.time),
             e.description,
-            fmt.format(e.amount),
+            fmt.format(e.amount).replaceAll('₹', 'Rs. '),
           ],
         )
         .toList();
+    final totalAmount = entries.fold(0.0, (s, e) => s + e.amount);
     d.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
@@ -1000,7 +1001,7 @@ class _Home extends State<Home> {
           pw.Align(
             alignment: pw.Alignment.centerRight,
             child: pw.Text(
-              'TOTAL  ${fmt.format(entries.fold(0.0, (s, e) => s + e.amount))}',
+              'TOTAL  ${fmt.format(totalAmount).replaceAll('₹', 'Rs. ')}',
               style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
             ),
           ),
