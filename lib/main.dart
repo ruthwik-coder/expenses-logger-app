@@ -89,9 +89,9 @@ class _Home extends State<Home> {
   );
 
   static const List<String> emojiSuggestions = [
-    '🚌', '🚇', '🛺', '🚕', '🚗', '🚲', '☕', '🍽️', 
-    '🛒', '💼', '⚡', '🏠', '🍿', '🎟️', '✈️', '🏥', 
-    '💊', '⛽', '📦', '🍔'
+    '🪵', '🚌', '🚇', '🛺', '🚕', '🚗', '🚲', '☕', 
+    '🍽️', '🛒', '💼', '⚡', '🏠', '🍿', '🎟️', '✈️', 
+    '🏥', '💊', '⛽', '📦', '🍔'
   ];
 
   @override
@@ -204,6 +204,9 @@ class _Home extends State<Home> {
 
   IconData getIconData(String kind) {
     switch (kind) {
+      case 'log':
+      case '🪵':
+        return Icons.forest_outlined;
       case 'train':
       case '🚇':
         return Icons.train;
@@ -261,7 +264,7 @@ class _Home extends State<Home> {
     }
   }
 
-  Widget presetIcon(Preset p, {double size = 26}) {
+  Widget presetIcon(Preset p, {double size = 32}) {
     if (!p.useColorEmoji) {
       return Icon(
         getIconData(p.kind),
@@ -282,7 +285,7 @@ class _Home extends State<Home> {
       appBar: AppBar(
         title: Text(
           tab == 0
-              ? 'Expense Log'
+              ? 'Expense Log 🪵'
               : tab == 1
                   ? 'History & Reports'
                   : 'Quick Buttons',
@@ -294,8 +297,8 @@ class _Home extends State<Home> {
         onDestinationSelected: (i) => setState(() => tab = i),
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.add_circle_outline),
-            selectedIcon: Icon(Icons.add_circle),
+            icon: Text('🪵', style: TextStyle(fontSize: 20)),
+            selectedIcon: Text('🪵', style: TextStyle(fontSize: 24)),
             label: 'Log',
           ),
           NavigationDestination(
@@ -317,7 +320,9 @@ class _Home extends State<Home> {
     final n = DateTime.now();
     final totalCount = presets.length + 1;
     final columns = totalCount <= 4 ? 2 : 3;
-    final childAspectRatio = columns == 2 ? 2.1 : 1.7;
+    final childAspectRatio = columns == 2
+        ? (totalCount <= 2 ? 1.4 : 1.12)
+        : 0.95;
 
     return ListView(
       padding: const EdgeInsets.all(20),
@@ -329,18 +334,25 @@ class _Home extends State<Home> {
         const SizedBox(height: 4),
         Text(
           'Today: ${fmt.format(total(DateTime(n.year, n.month, n.day)))}',
-          style: const TextStyle(fontSize: 29, fontWeight: FontWeight.w800),
+          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w800),
         ),
-        const SizedBox(height: 20),
-        const Text(
-          'TAP TO LOG',
-          style: TextStyle(
-            letterSpacing: 1.3,
-            fontWeight: FontWeight.bold,
-            color: Color(0xff176b5b),
-          ),
+        const SizedBox(height: 24),
+        Row(
+          children: const [
+            Text('🪵', style: TextStyle(fontSize: 20)),
+            SizedBox(width: 8),
+            Text(
+              'TAP BUTTON TO LOG',
+              style: TextStyle(
+                letterSpacing: 1.3,
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: Color(0xff176b5b),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 14),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -348,15 +360,15 @@ class _Home extends State<Home> {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: columns,
             childAspectRatio: childAspectRatio,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
           ),
           itemBuilder: (c, i) => i == presets.length
               ? otherCard(compact: columns > 2)
               : presetCard(presets[i], compact: columns > 2),
         ),
         if (entries.isNotEmpty) ...[
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
           const Text(
             'RECENT LOGS',
             style: TextStyle(
@@ -365,7 +377,7 @@ class _Home extends State<Home> {
               color: Color(0xff176b5b),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           ...entries.take(4).map((e) => tile(e, allowDelete: false)),
         ],
       ],
@@ -374,50 +386,83 @@ class _Home extends State<Home> {
 
   Widget presetCard(Preset p, {bool compact = false}) => Material(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        elevation: 1,
-        shadowColor: Colors.black.withAlpha(12),
+        borderRadius: BorderRadius.circular(22),
+        elevation: 2,
+        shadowColor: Colors.black.withAlpha(16),
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(22),
           onTap: () => log(p),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Row(
+            padding: EdgeInsets.all(compact ? 12 : 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xffe2f1ec),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: presetIcon(p, size: compact ? 20 : 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(compact ? 10 : 12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffe2f1ec),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: presetIcon(p, size: compact ? 26 : 34),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xff176b5b).withAlpha(15),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        'TAP TO LOG',
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff176b5b),
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                const SizedBox(height: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      p.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: compact ? 16 : 20,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xff2d3748),
+                      ),
+                    ),
+                    if (p.description != p.name) ...[
+                      const SizedBox(height: 2),
                       Text(
-                        p.name,
+                        p.description,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: compact ? 13 : 15,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xff2d3748),
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        fmt.format(p.amount),
-                        style: TextStyle(
-                          fontSize: compact ? 15 : 18,
-                          fontWeight: FontWeight.w800,
-                          color: const Color(0xff176b5b),
+                          fontSize: compact ? 11 : 13,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  fmt.format(p.amount),
+                  style: TextStyle(
+                    fontSize: compact ? 22 : 28,
+                    fontWeight: FontWeight.w900,
+                    color: const Color(0xff176b5b),
                   ),
                 ),
               ],
@@ -428,50 +473,59 @@ class _Home extends State<Home> {
 
   Widget otherCard({bool compact = false}) => Material(
         color: const Color(0xffe2f1ec),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(22),
+        elevation: 1,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(22),
           onTap: other,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Row(
+            padding: EdgeInsets.all(compact ? 12 : 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.all(compact ? 10 : 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xff176b5b).withAlpha(30),
-                    borderRadius: BorderRadius.circular(12),
+                    color: const Color(0xff176b5b).withAlpha(40),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
                     Icons.add_circle_outline,
-                    size: compact ? 20 : 24,
+                    size: compact ? 26 : 34,
                     color: const Color(0xff176b5b),
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Other',
-                        style: TextStyle(
-                          fontSize: compact ? 13 : 15,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xff176b5b),
-                        ),
+                const SizedBox(height: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Other Expense',
+                      style: TextStyle(
+                        fontSize: compact ? 16 : 20,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xff176b5b),
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        'Custom',
-                        style: TextStyle(
-                          fontSize: compact ? 11 : 13,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xff176b5b).withAlpha(180),
-                        ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Custom entry',
+                      style: TextStyle(
+                        fontSize: compact ? 11 : 13,
+                        color: const Color(0xff176b5b).withAlpha(180),
+                        fontWeight: FontWeight.w500,
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '+ Enter',
+                  style: TextStyle(
+                    fontSize: compact ? 22 : 28,
+                    fontWeight: FontWeight.w900,
+                    color: const Color(0xff176b5b),
                   ),
                 ),
               ],
@@ -663,11 +717,19 @@ class _Home extends State<Home> {
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
               ),
-              style:
-                  const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff176b5b),
+              ),
               decoration: const InputDecoration(
                 labelText: 'Amount (₹)',
                 prefixText: '₹  ',
+                prefixStyle: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xff176b5b),
+                ),
               ),
             ),
           ],
@@ -818,10 +880,14 @@ class _Home extends State<Home> {
                   controller: a,
                   keyboardType: TextInputType.number,
                   style: const TextStyle(
-                    fontSize: 25,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
+                    color: Color(0xff176b5b),
                   ),
-                  decoration: const InputDecoration(labelText: 'Amount (₹)'),
+                  decoration: const InputDecoration(
+                    labelText: 'Amount (₹)',
+                    prefixText: '₹  ',
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
