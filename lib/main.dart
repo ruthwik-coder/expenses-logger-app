@@ -297,8 +297,8 @@ class _Home extends State<Home> {
         onDestinationSelected: (i) => setState(() => tab = i),
         destinations: const [
           NavigationDestination(
-            icon: Text('', style: TextStyle(fontSize: 20)),
-            selectedIcon: Text('', style: TextStyle(fontSize: 24)),
+            icon: Text('+', style: TextStyle(fontSize: 20)),
+            selectedIcon: Text('+', style: TextStyle(fontSize: 24)),
             label: 'Log',
           ),
           NavigationDestination(
@@ -416,7 +416,7 @@ class _Home extends State<Home> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Text(
-                        'TAP TO LOG',
+                        '',
                         style: TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
@@ -441,19 +441,6 @@ class _Home extends State<Home> {
                         color: const Color(0xff2d3748),
                       ),
                     ),
-                    if (p.description != p.name) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        p.description,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: compact ? 11 : 13,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
                   ],
                 ),
                 const SizedBox(height: 4),
@@ -497,27 +484,13 @@ class _Home extends State<Home> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Other Expense',
-                      style: TextStyle(
-                        fontSize: compact ? 16 : 20,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xff176b5b),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Custom entry',
-                      style: TextStyle(
-                        fontSize: compact ? 11 : 13,
-                        color: const Color(0xff176b5b).withAlpha(180),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+                Text(
+                  'Others',
+                  style: TextStyle(
+                    fontSize: compact ? 16 : 20,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xff176b5b),
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -544,7 +517,7 @@ class _Home extends State<Home> {
             child: Icon(Icons.payments_outlined, color: Color(0xff176b5b)),
           ),
           title: Text(
-            e.description,
+            e.name,
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           subtitle: Text(DateFormat('dd MMM yyyy · hh:mm a').format(e.time)),
