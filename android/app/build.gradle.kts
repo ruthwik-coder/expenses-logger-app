@@ -39,3 +39,16 @@ android {
 flutter {
     source = "../.."
 }
+
+tasks.register<Copy>("copyReleaseApk") {
+    from(layout.buildDirectory.dir("outputs/apk/release"))
+    into(file("../../build/app/outputs/flutter-apk"))
+    include("*.apk")
+}
+
+tasks.whenTaskAdded {
+    if (name == "assembleRelease") {
+        finalizedBy("copyReleaseApk")
+    }
+}
+
